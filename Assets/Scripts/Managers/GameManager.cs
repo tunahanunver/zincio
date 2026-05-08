@@ -28,7 +28,7 @@ namespace Managers
         #endregion
         
         #endregion
-        
+
         private void OnEnable() => SubscribeEvents();
         
         private void SubscribeEvents()
@@ -48,7 +48,7 @@ namespace Managers
             if (_gameState == GameState.Idle)
             {
                 SetState(GameState.Playing);
-                TimerManager.Instance.StopTimer();
+                TimerManager.Instance.StartTimer();
             }
         }
         

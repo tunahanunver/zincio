@@ -13,11 +13,20 @@ MonoBehaviour:
   m_Name: CD_WordList
   m_EditorClassIdentifier: Assembly-CSharp::Data.UnityObjects.CD_WordList
   words:
-  - Telefon
-  - Nota
-  - Araba
-  - Asker
-  - Resim
-  - Mahalle
-  - Emlak
-  - "Kas\u0131m"
+  - telefon
+  - nota
+  - araba
+  - asker
+  - resim
+  - mahalle
+  - emlak
+  - "kas\u0131m"
+  - meslek
+  - "kad\u0131n"
+  - nesne
+  - emek
+  - kar
+  - rol
+  - leylek
+  - kelime
+  - kemik

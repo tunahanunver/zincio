@@ -60,7 +60,7 @@ namespace Managers
             _remainingTime = _gameDuration;
             _isRunning = false;
         }
-        
+
         public void StartTimer() => _isRunning = true;
         
         public void StopTimer() => _isRunning = false;

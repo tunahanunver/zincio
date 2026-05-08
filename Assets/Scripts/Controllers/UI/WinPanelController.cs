@@ -1,4 +1,5 @@
-﻿using Data.UnityObjects;
+﻿using System;
+using Data.UnityObjects;
 using Data.ValueObjects;
 using Enums;
 using Managers;
@@ -22,13 +23,8 @@ namespace Controllers.UI
         #endregion
 
         #endregion
-        
-        protected override void SubscribeEvents()
-        {
-            CoreGameSignals.Instance.onLevelSuccess += OnLevelSuccess;
-        }
-        
-        private void OnLevelSuccess()
+
+        private void Start()
         {
             int levelIndex = CoreGameSignals.Instance.onGetCurrentLevel();
             int score = ScoreManager.Instance.GetCurrentScore();
@@ -40,7 +36,24 @@ namespace Controllers.UI
             CD_Game cdGame = Resources.Load<CD_Game>("Data/CD_Game");
             CD_Level cdLevel = cdGame.levels[levelIndex % cdGame.levels.Count];
             int stars = CalculateStars(chainCount, cdLevel.starThresholds);
+            Debug.Log("Yıldız sayısı: " + stars);
             ShowStars(stars);
+        }
+
+        protected override void SubscribeEvents()
+        {
+            CoreGameSignals.Instance.onLevelSuccess += OnLevelSuccess;
+        }
+        
+        private void OnLevelSuccess()
+        {
+            //int levelIndex = CoreGameSignals.Instance.onGetCurrentLevel();
+            //int chainCount = WordManager.Instance.GetChainCount();
+            //CD_Game cdGame = Resources.Load<CD_Game>("Data/CD_Game");
+            //CD_Level cdLevel = cdGame.levels[levelIndex % cdGame.levels.Count];
+            //int stars = CalculateStars(chainCount, cdLevel.starThresholds);
+            //Debug.Log("Yıldız sayısı" + stars);
+            //ShowStars(stars);
         }
         
         private int CalculateStars(int chainCount, StarThresholdData thresholds)

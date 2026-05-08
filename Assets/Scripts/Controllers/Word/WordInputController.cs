@@ -25,6 +25,8 @@ namespace Controllers.Word
             WordSignals.Instance.onWordAccepted += OnWordAccepted;
             WordSignals.Instance.onWordRejected += OnWordRejected;
             CoreGameSignals.Instance.onReset += OnReset;
+            CoreGameSignals.Instance.onLevelSuccess += OnGameOver;
+            CoreGameSignals.Instance.onLevelFail += OnGameOver;
         }
         
         private void OnWordAccepted(string word)
@@ -58,8 +60,15 @@ namespace Controllers.Word
         private void OnReset()
         {
             inputField.text = string.Empty;
+            inputField.interactable = true;
             inputFieldBackground.color = defaultColor;
             requiredLetterText.text = string.Empty;
+        }
+        
+        private void OnGameOver()
+        {
+            inputField.interactable = false;
+            inputField.text = string.Empty;
         }
         
         private void UnsubscribeEvents()
@@ -67,6 +76,8 @@ namespace Controllers.Word
             WordSignals.Instance.onWordAccepted -= OnWordAccepted;
             WordSignals.Instance.onWordRejected -= OnWordRejected;
             CoreGameSignals.Instance.onReset -= OnReset;
+            CoreGameSignals.Instance.onLevelSuccess -= OnGameOver;
+            CoreGameSignals.Instance.onLevelFail -= OnGameOver;
         }
         
         private void OnDisable() => UnsubscribeEvents();

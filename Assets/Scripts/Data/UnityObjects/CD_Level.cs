@@ -1,5 +1,6 @@
 ﻿using Data.ValueObjects;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Data.UnityObjects
 {
@@ -10,5 +11,6 @@ namespace Data.UnityObjects
         public string levelName;
         public StarThresholdData starThresholds;
         public CD_WordList wordList;
+        public List<LetterSetData> letterSets;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Data.UnityObjects;
+using Data.ValueObjects;
 using Extensions;
 using Signals;
 using UnityEngine;
@@ -25,9 +26,11 @@ namespace Managers
         #region Private Variables
         
         private CD_WordList _wordList;
+        private CD_Level _currentLevel;
         private HashSet<string> _usedWords = new HashSet<string>();
         private string _currentRequiredLetter;
         private int _chainCount;
+        private int _currentLetterSetIndex;
         
         #endregion
         
@@ -39,6 +42,7 @@ namespace Managers
         {
             CoreGameSignals.Instance.onLevelInitialize += OnLevelInitialize;
             WordSignals.Instance.onWordSubmitted += OnWordSubmitted;
+            WordSignals.Instance.onGetCurrentLetterSet += OnGetCurrentLetterSet;
             CoreGameSignals.Instance.onReset += OnReset;
             WordSignals.Instance.onGetRequiredLetter += OnGetRequiredLetter;
         }
@@ -47,15 +51,21 @@ namespace Managers
         {
             int levelIndex = CoreGameSignals.Instance.onGetCurrentLevel();
             CD_Game cdGame = Resources.Load<CD_Game>("Data/CD_Game");
-            CD_Level cdLevel = cdGame.levels[levelIndex % cdGame.levels.Count];
-            _wordList = cdLevel.wordList;
+            _currentLevel = cdGame.levels[levelIndex % cdGame.levels.Count];
+            _wordList = _currentLevel.wordList;
             _usedWords.Clear();
             _chainCount = 0;
-            string startWord = GetRandomStartWord();
-            _usedWords.Add(startWord.NormalizeTurkish());
-            _currentRequiredLetter = startWord.GetLastLetter().ToString().ToTurkishUpper();
-            WordSignals.Instance.onWordAccepted.Invoke(startWord);
-            WordSignals.Instance.onChainUpdated.Invoke(_chainCount);
+            _currentLetterSetIndex = 0;
+            
+            if (_currentLevel.letterSets != null && _currentLevel.letterSets.Count > 0)
+            {
+                string startWord = BuildStartWord(_currentLevel.letterSets[0]);
+                _usedWords.Add(startWord.NormalizeTurkish());
+                _currentRequiredLetter = startWord.GetLastLetter().ToString().ToTurkishUpper();
+                _currentLetterSetIndex = 1;
+                WordSignals.Instance.onStartWordSet.Invoke(startWord);
+                WordSignals.Instance.onChainUpdated.Invoke(_chainCount);
+            }
         }
         
         private void OnWordSubmitted(string rawInput)
@@ -84,14 +94,29 @@ namespace Managers
             _usedWords.Add(normalized);
             _chainCount++;
             _currentRequiredLetter = normalized.GetLastLetter().ToString().ToTurkishUpper();
+            _currentLetterSetIndex++;
+            WordSignals.Instance.onLetterSetConsumed.Invoke();
             WordSignals.Instance.onWordAccepted.Invoke(rawInput.ToTurkishUpper());
             WordSignals.Instance.onChainUpdated.Invoke(_chainCount);
+        }
+        
+        private LetterSetData OnGetCurrentLetterSet()
+        {
+            if (_currentLevel == null || _currentLevel.letterSets == null) return default;
+            if (_currentLetterSetIndex >= _currentLevel.letterSets.Count) return default;
+            return _currentLevel.letterSets[_currentLetterSetIndex];
         }
         
         private bool IsValidWord(string normalized)
         {
             if (_wordList == null) return true;
-            return _wordList.words.Contains(normalized);
+            return _wordList.words.Exists(w => w.NormalizeTurkish() == normalized);
+        }
+        
+        private string BuildStartWord(LetterSetData set)
+        {
+            if (set.letters == null || set.letters.Count == 0) return "ARABA";
+            return new string(set.letters.ToArray()).ToTurkishUpper();
         }
         
         private string GetRandomStartWord()
@@ -110,6 +135,7 @@ namespace Managers
             _usedWords.Clear();
             _chainCount = 0;
             _currentRequiredLetter = string.Empty;
+            _currentLetterSetIndex = 0;
         }
         
         public int GetChainCount() => _chainCount;
@@ -118,6 +144,7 @@ namespace Managers
         {
             CoreGameSignals.Instance.onLevelInitialize -= OnLevelInitialize;
             WordSignals.Instance.onWordSubmitted -= OnWordSubmitted;
+            WordSignals.Instance.onGetCurrentLetterSet -= OnGetCurrentLetterSet;
             CoreGameSignals.Instance.onReset -= OnReset;
             WordSignals.Instance.onGetRequiredLetter -= OnGetRequiredLetter;
         }

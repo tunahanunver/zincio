@@ -50,7 +50,6 @@ namespace Managers
             GameObject prefab = Resources.Load<GameObject>(path);
             if (prefab == null)
             {
-                Debug.LogError($"Panel prefab bulunamadı: {path}");
                 return;
             }
             int layerIndex = GetLayerIndex(panelType);

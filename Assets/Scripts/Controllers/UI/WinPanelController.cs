@@ -36,7 +36,6 @@ namespace Controllers.UI
             CD_Game cdGame = Resources.Load<CD_Game>("Data/CD_Game");
             CD_Level cdLevel = cdGame.levels[levelIndex % cdGame.levels.Count];
             int stars = CalculateStars(chainCount, cdLevel.starThresholds);
-            Debug.Log("Yıldız sayısı: " + stars);
             ShowStars(stars);
         }
 
@@ -52,7 +51,6 @@ namespace Controllers.UI
             //CD_Game cdGame = Resources.Load<CD_Game>("Data/CD_Game");
             //CD_Level cdLevel = cdGame.levels[levelIndex % cdGame.levels.Count];
             //int stars = CalculateStars(chainCount, cdLevel.starThresholds);
-            //Debug.Log("Yıldız sayısı" + stars);
             //ShowStars(stars);
         }
         

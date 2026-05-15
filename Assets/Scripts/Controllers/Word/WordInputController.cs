@@ -43,7 +43,6 @@ namespace Controllers.Word
         {
             inputFieldBackground.color = rejectColor;
             Invoke(nameof(ResetInputColor), 0.5f);
-            Debug.Log("Kelime reddedildi: " + reason);
         }
         
         private void ResetInputColor()

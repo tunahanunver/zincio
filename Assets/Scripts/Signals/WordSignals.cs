@@ -1,4 +1,5 @@
 ﻿using System;
+using Data.ValueObjects;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,6 +27,9 @@ namespace Signals
         public UnityAction<string> onWordAccepted = delegate { };
         public UnityAction<string> onWordRejected = delegate { };
         public UnityAction<int> onChainUpdated = delegate { };
+        public UnityAction<string> onStartWordSet = delegate { };
         public Func<char> onGetRequiredLetter = delegate { return '\0'; };
+        public Func<LetterSetData> onGetCurrentLetterSet = delegate { return default; };
+        public UnityAction onLetterSetConsumed = delegate { };
     }
 }
